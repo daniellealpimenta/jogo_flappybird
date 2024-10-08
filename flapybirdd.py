@@ -19,7 +19,6 @@ TELA_ALTURA = 954
 pygame.mixer.init()
 pygame.mixer.music.load("music/The Most Powerful Chicken.mp3")
 pygame.mixer.music.set_volume(0.8)
-# pygame.mixer.music.play(-1, 2)
 
 voar = pygame.mixer.Sound("efeitos_sonoros/mixkit-boxing-punch-2051.wav")
 voar.set_volume(0.15)
@@ -79,7 +78,7 @@ caminho_fonte = os.path.join('fonts', 'PixelOperator8.ttf')
 FONTE_PONTOS = pygame.font.Font(caminho_fonte, 25)
 
 def salvar_dados_csv(lista_genomas, pontos, geracao_num):
-    arquivo_csv = 'dados_genomas5.csv'
+    arquivo_csv = 'dados_genomas8.csv'
     file_exists = os.path.isfile(arquivo_csv)
 
     with open(arquivo_csv, mode='a', newline='') as arquivo:
@@ -181,8 +180,6 @@ class Passaro:
 
     def get_mask(self):
         return pygame.mask.from_surface(self.imagem)
-
-
 
     def alterar_skin(self, nova_skin):
         if nova_skin == "bird":
@@ -298,6 +295,8 @@ class Chao:
     def desenhar(self, tela):
         tela.blit(self.IMAGEM, (self.x1, self.y))
         tela.blit(self.IMAGEM, (self.x2, self.y))
+
+#----------------------------------------------------------------------------------------------------------------------------#
 
 def desenhar_tela(tela, passaros, canos, chao, pontos):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
@@ -535,7 +534,6 @@ def main(genomas, config):
     Cano.resetar_velocidade()
     pygame.mixer.music.play(-1, 2)
     global geracao
-
     redes = []
     lista_genomas = []
 
@@ -576,13 +574,15 @@ def main(genomas, config):
                     pygame.mixer.music.pause()
                     acao = tela_pausada(tela)
                     if acao == 'restart':
+                        geracao = 0
                         main(genomas, config)
                         return
                 elif evento.key == pygame.K_ESCAPE:
+                    geracao = 0
                     pygame.mixer.music.stop()
                     perdeu.play()
                     tela_fim(tela,pontos)
-
+                    salvar_dados_csv(lista_genomas, pontos, geracao)
 
             if not ai_jogando:
                 if evento.type == pygame.KEYDOWN:
